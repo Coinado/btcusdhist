@@ -175,11 +175,9 @@ function btcToUSD(dateTime) {
       case 6:
         unixTime = dateTime / 1000;
         closest = _binarysearch2['default'].closest(index, unixTime);
-
-        console.log('ans is ', ticks[closest][1]);
         return context$1$0.abrupt('return', ticks[closest][1]);
 
-      case 10:
+      case 9:
       case 'end':
         return context$1$0.stop();
     }

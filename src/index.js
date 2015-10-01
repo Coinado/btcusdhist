@@ -45,7 +45,6 @@ export async function btcToUSD(dateTime) {
   await load();
   const unixTime = dateTime/1000;
   const closest = bs.closest(index, unixTime);
-  console.log('ans is ',ticks[closest][1]);
   return ticks[closest][1]; 
 }
 
