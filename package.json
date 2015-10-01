@@ -1,0 +1,28 @@
+{
+  "name": "btcusdhist",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "babel --optional runtime src -d .",
+    "test": "cd test && node test.js|faucet;cd .."
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "babel-runtime": "^5.8.25",
+    "binarysearch": "^0.2.4",
+    "bluebird": "^2.10.1",
+    "csv-parse": "^1.0.0",
+    "es6-promisify": "^3.0.0",
+    "fishing": "^0.2.0",
+    "gunzip-maybe": "^1.2.1",
+    "moment": "^2.10.6",
+    "mz": "^2.0.0",
+    "request": "^2.64.0"
+  },
+  "devDependencies": {
+    "blue-tape": "^0.1.10",
+    "tape": "^4.2.0"
+  }
+}
