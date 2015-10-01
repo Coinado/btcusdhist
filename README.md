@@ -1,4 +1,4 @@
-Get a BTC price given at a given time in the recent past.
+Get BTC price at a given time in the recent past.
 
 # Usage
 
