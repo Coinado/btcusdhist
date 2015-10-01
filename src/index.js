@@ -8,10 +8,10 @@ import gunzip from 'gunzip-maybe';
 let ticks = [];
 let index = null;
 
-load().then(()=>{});
+_load().then(()=>{});
+let reload = setInterval( ()=>{_load()}, 16*1000*60*60);
 
-async function load(reload) {
-  if (!reload && ticks.length>0) return;
+async function _load() {
   const url = 'http://api.bitcoincharts.com/v1/csv/krakenUSD.csv.gz';
   let unzip = gunzip();
   request(url).pipe(unzip);
@@ -24,7 +24,14 @@ async function load(reload) {
     tick[0] = tick[0]*1;
     index[i++] = tick[0];
   }
-  setInterval( ()=>{load(true)}, 16*1000*60*60);
+}
+
+async function load() {
+  if (ticks.length>0) {
+    return;
+  } else {
+    return await _load();
+  }
 }
 
 async function lastPrice() {
@@ -38,6 +45,11 @@ export async function btcToUSD(dateTime) {
   await load();
   const unixTime = dateTime/1000;
   const closest = bs.closest(index, unixTime);
+  console.log('ans is ',ticks[closest][1]);
   return ticks[closest][1]; 
+}
+
+export function done() {
+  clearInterval(reload);
 }
 
