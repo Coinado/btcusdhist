@@ -12,6 +12,12 @@ Object.defineProperty(exports, '__esModule', {
 exports.btcToUSD = btcToUSD;
 exports.done = done;
 
+var _requestPromiseJson = require('request-promise-json');
+
+var _requestPromiseJson2 = _interopRequireDefault(_requestPromiseJson);
+
+var _util = require('util');
+
 var _csvParse = require('csv-parse');
 
 var _csvParse2 = _interopRequireDefault(_csvParse);
@@ -33,6 +39,10 @@ var _fishing = require('fishing');
 var _gunzipMaybe = require('gunzip-maybe');
 
 var _gunzipMaybe2 = _interopRequireDefault(_gunzipMaybe);
+
+var _memoryCache = require('memory-cache');
+
+var _memoryCache2 = _interopRequireDefault(_memoryCache);
 
 var ticks = [];
 var index = null;
@@ -143,22 +153,46 @@ function load() {
 }
 
 function lastPrice() {
+  var prices, url;
   return _regeneratorRuntime.async(function lastPrice$(context$1$0) {
     while (1) switch (context$1$0.prev = context$1$0.next) {
       case 0:
+        prices = null;
+
+        prices = _memoryCache2['default'].get('prices');
+
+        if (prices) {
+          context$1$0.next = 9;
+          break;
+        }
+
+        url = 'https://api.bitcoinaverage.com/ticker/global/USD/';
+        context$1$0.next = 6;
+        return _regeneratorRuntime.awrap(_requestPromiseJson2['default'].get(url));
+
+      case 6:
+        prices = context$1$0.sent;
+
+        console.log('prices is ', (0, _util.inspect)(prices, { depth: 4 }));
+        _memoryCache2['default'].put('prices', prices, 30 * 1000);
+
+      case 9:
+        return context$1$0.abrupt('return', prices.last);
+
+      case 10:
       case 'end':
         return context$1$0.stop();
     }
   }, null, this);
 }
 
-function btcToUSD(dateTime) {
-  var unixTime, closest;
+function btcToUSD(btc, dateTime) {
+  var price, unixTime, closest;
   return _regeneratorRuntime.async(function btcToUSD$(context$1$0) {
     while (1) switch (context$1$0.prev = context$1$0.next) {
       case 0:
         if (!(Date.now() - dateTime.getTime() < 1000 * 60 * 60 * 24)) {
-          context$1$0.next = 4;
+          context$1$0.next = 5;
           break;
         }
 
@@ -166,18 +200,19 @@ function btcToUSD(dateTime) {
         return _regeneratorRuntime.awrap(lastPrice());
 
       case 3:
-        return context$1$0.abrupt('return', context$1$0.sent);
+        price = context$1$0.sent;
+        return context$1$0.abrupt('return', price * btc);
 
-      case 4:
-        context$1$0.next = 6;
+      case 5:
+        context$1$0.next = 7;
         return _regeneratorRuntime.awrap(load());
 
-      case 6:
+      case 7:
         unixTime = dateTime / 1000;
         closest = _binarysearch2['default'].closest(index, unixTime);
-        return context$1$0.abrupt('return', ticks[closest][1]);
+        return context$1$0.abrupt('return', ticks[closest][1] * btc);
 
-      case 9:
+      case 10:
       case 'end':
         return context$1$0.stop();
     }

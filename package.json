@@ -14,12 +14,16 @@
     "binarysearch": "^0.2.4",
     "bluebird": "^2.10.1",
     "csv-parse": "^1.0.0",
+    "dev-null": "^0.1.1",
     "es6-promisify": "^3.0.0",
     "fishing": "^0.2.0",
     "gunzip-maybe": "^1.2.1",
+    "memory-cache": "^0.1.4",
     "moment": "^2.10.6",
     "mz": "^2.0.0",
-    "request": "^2.64.0"
+    "request": "^2.64.0",
+    "request-promise": "^0.4.3",
+    "request-promise-json": "^1.0.4"
   },
   "devDependencies": {
     "blue-tape": "^0.1.10",

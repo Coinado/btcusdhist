@@ -1,9 +1,12 @@
+import reqjson from 'request-promise-json';
+import {inspect} from 'util';
 import csvparse from 'csv-parse';
 import pr from 'es6-promisify';
 import bs from 'binarysearch';
 import request from 'request';
 import {toPromise} from 'fishing';
 import gunzip from 'gunzip-maybe';
+import cache from 'memory-cache';
 
 let ticks = [];
 let index = null;
@@ -35,17 +38,25 @@ async function load() {
 }
 
 async function lastPrice() {
-            
+  let prices = null;
+  prices = cache.get('prices');
+  if (!prices) {
+    let url = 'https://api.bitcoinaverage.com/ticker/global/USD/';
+    prices = await reqjson.get(url);
+    cache.put('prices', prices, 30*1000);
+  }
+  return prices.last;
 }
 
-export async function btcToUSD(dateTime) { 
+export async function btcToUSD(btc, dateTime) { 
   if (Date.now()-dateTime.getTime()<(1000*60*60*24)) {
-    return await lastPrice();
+    let price = await lastPrice();
+    return price * btc;
   }
   await load();
   const unixTime = dateTime/1000;
   const closest = bs.closest(index, unixTime);
-  return ticks[closest][1]; 
+  return ticks[closest][1] * btc; 
 }
 
 export function done() {
