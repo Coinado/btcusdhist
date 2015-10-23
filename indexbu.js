@@ -207,12 +207,11 @@ function btcToUSD(btc, dateTime) {
         return _regeneratorRuntime.awrap(load());
 
       case 7:
-        dateTime = dateTime.getTime();
-        unixTime = Math.round(dateTime / 1000);
+        unixTime = dateTime / 1000;
         closest = _binarysearch2['default'].closest(index, unixTime);
         return context$1$0.abrupt('return', ticks[closest][1] * btc);
 
-      case 11:
+      case 10:
       case 'end':
         return context$1$0.stop();
     }

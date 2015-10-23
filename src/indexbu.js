@@ -54,8 +54,7 @@ export async function btcToUSD(btc, dateTime) {
     return price * btc;
   }
   await load();
-  dateTime = dateTime.getTime();
-  const unixTime = Math.round(dateTime/1000);
+  const unixTime = dateTime/1000;
   const closest = bs.closest(index, unixTime);
   return ticks[closest][1] * btc; 
 }
