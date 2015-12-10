@@ -4,21 +4,20 @@ import csvparse from 'csv-parse';
 import pr from 'es6-promisify';
 import bs from 'binarysearch';
 import request from 'request';
-import {toPromise} from 'fishing';
+import sprom from 'sprom';
 import gunzip from 'gunzip-maybe';
 import cache from 'memory-cache';
 
 let ticks = [];
 let index = null;
 
-_load().then(()=>{});
 let reload = setInterval( ()=>{_load()}, 16*1000*60*60);
 
 async function _load() {
   const url = 'http://api.bitcoincharts.com/v1/csv/krakenUSD.csv.gz';
   let unzip = gunzip();
   request(url).pipe(unzip);
-  let csv = (await toPromise(unzip)).toString();
+  let csv = (await sprom(unzip)).toString();
   ticks = await pr(csvparse)(csv, {});
   let buffer = new ArrayBuffer(ticks.length*4);
   index  = new Int32Array(buffer); 
@@ -28,6 +27,8 @@ async function _load() {
     index[i++] = tick[0];
   }
 }
+
+_load().then(()=>{});
 
 async function load() {
   if (ticks.length>0) {
