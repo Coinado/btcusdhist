@@ -1,3 +1,5 @@
+import 'babel-core/register';
+import 'babel-polyfill'
 import reqjson from 'request-promise-json';
 import {inspect} from 'util';
 import csvparse from 'csv-parse';
